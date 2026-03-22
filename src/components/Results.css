@@ -1,0 +1,82 @@
+.results {
+  margin-top: 24px;
+}
+
+.results h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+.results__combo {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.results__combo--best {
+  border-color: #2563eb;
+  background: #f8faff;
+}
+
+.results__combo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.results__rank {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 28px;
+}
+
+.results__combo--best .results__rank {
+  color: #2563eb;
+}
+
+.results__keep {
+  flex: 1;
+}
+
+.results__discard {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.results__mean {
+  font-size: 14px;
+}
+
+.score-breakdown {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.score-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.score-table th {
+  text-align: left;
+  padding: 4px 12px 4px 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.score-table td {
+  padding: 4px 12px 4px 0;
+}
