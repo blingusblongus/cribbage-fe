@@ -47,58 +47,58 @@ function ScoreBreakdown({ result }: { result: HandResult }) {
   const maxChance = Math.max(...scores.map((s) => s.chance));
 
   return (
-    <div className="space-y-4 pt-4 border-t border-border">
-      <div className="grid grid-cols-3 gap-3">
-        <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-          <Target className="h-4 w-4 text-emerald-400" />
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Mean</div>
-            <div className="text-lg font-bold text-foreground">{result.mean.toFixed(2)}</div>
+    <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-border">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 shrink-0" />
+          <div className="min-w-0">
+            <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Mean</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{result.mean.toFixed(2)}</div>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-          <TrendingUp className="h-4 w-4 text-amber-400" />
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Max</div>
-            <div className="text-lg font-bold text-foreground">{result.max}</div>
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+          <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 shrink-0" />
+          <div className="min-w-0">
+            <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Max</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{result.max}</div>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-          <TrendingDown className="h-4 w-4 text-red-400" />
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Min</div>
-            <div className="text-lg font-bold text-foreground">{result.min}</div>
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+          <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-400 shrink-0" />
+          <div className="min-w-0">
+            <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Min</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{result.min}</div>
           </div>
         </div>
       </div>
       <Table>
         <TableHeader>
           <TableRow className="border-border">
-            <TableHead className="w-20">Score</TableHead>
-            <TableHead>Chance</TableHead>
-            <TableHead className="w-24 text-right">Count</TableHead>
+            <TableHead className="w-14 sm:w-20 text-xs sm:text-sm">Score</TableHead>
+            <TableHead className="text-xs sm:text-sm">Chance</TableHead>
+            <TableHead className="w-16 sm:w-24 text-right text-xs sm:text-sm">Count</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {scores.map(({ score, count, chance }) => (
             <TableRow key={score} className="border-border/50">
-              <TableCell className={cn("font-bold text-base", scoreColor(score))}>
+              <TableCell className={cn("font-bold text-sm sm:text-base", scoreColor(score))}>
                 {score}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex-1 h-1.5 sm:h-2 rounded-full bg-muted overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all"
                       style={{ width: `${(chance / maxChance) * 100}%` }}
                     />
                   </div>
-                  <span className="text-sm tabular-nums w-14 text-right">
+                  <span className="text-xs sm:text-sm tabular-nums w-12 sm:w-14 text-right">
                     {chance.toFixed(1)}%
                   </span>
                 </div>
               </TableCell>
-              <TableCell className="text-right text-muted-foreground tabular-nums">
+              <TableCell className="text-right text-muted-foreground tabular-nums text-xs sm:text-sm">
                 {count} / 46
               </TableCell>
             </TableRow>
@@ -131,11 +131,11 @@ function ComboRow({
         )}
       >
         <CollapsibleTrigger className="w-full text-left cursor-pointer">
-          <CardHeader className="py-3 px-4">
-            <div className="flex items-center gap-3 flex-wrap">
+          <CardHeader className="py-2.5 sm:py-3 px-3 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
               <Badge
                 className={cn(
-                  "text-xs font-bold",
+                  "text-[10px] sm:text-xs font-bold",
                   rank === 1
                     ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
                     : ""
@@ -144,24 +144,24 @@ function ComboRow({
               >
                 #{rank}
               </Badge>
-              <span className="flex-1 text-sm">
+              <span className="flex-1 text-xs sm:text-sm min-w-0">
                 Keep:{" "}
                 <strong className="text-foreground">
                   {item.keep.join(", ")}
                 </strong>
               </span>
-              <span className="text-xs text-muted-foreground hidden sm:inline">
+              <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:inline">
                 Discard: {item.discard.join(", ")}
               </span>
               <Badge
                 variant="outline"
-                className="font-mono tabular-nums border-emerald-500/30 text-emerald-400"
+                className="font-mono tabular-nums border-emerald-500/30 text-emerald-400 text-[10px] sm:text-xs"
               >
                 {item.result.mean.toFixed(2)} avg
               </Badge>
               <ChevronDown
                 className={cn(
-                  "h-4 w-4 text-muted-foreground transition-transform duration-200",
+                  "h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground transition-transform duration-200 shrink-0",
                   open && "rotate-180"
                 )}
               />
@@ -169,7 +169,7 @@ function ComboRow({
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="px-4 pb-4 pt-0">
+          <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
             <ScoreBreakdown result={item.result} />
           </CardContent>
         </CollapsibleContent>
@@ -181,11 +181,11 @@ function ComboRow({
 export function Results({ data }: ResultsProps) {
   if (isHandResult(data)) {
     return (
-      <Card className="mt-6 border-emerald-500/20 shadow-xl shadow-emerald-900/10">
-        <CardHeader>
-          <CardTitle className="text-emerald-400">Hand Analysis</CardTitle>
+      <Card className="mt-4 sm:mt-6 border-emerald-500/20 shadow-xl shadow-emerald-900/10">
+        <CardHeader className="px-3 sm:px-6">
+          <CardTitle className="text-emerald-400 text-base sm:text-lg">Hand Analysis</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6">
           <ScoreBreakdown result={data} />
         </CardContent>
       </Card>
@@ -193,8 +193,8 @@ export function Results({ data }: ResultsProps) {
   }
 
   return (
-    <div className="mt-6 space-y-3">
-      <h2 className="text-lg font-semibold bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">
+    <div className="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
+      <h2 className="text-base sm:text-lg font-semibold bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">
         Best Hands to Keep
       </h2>
       {data.map((item, i) => (
