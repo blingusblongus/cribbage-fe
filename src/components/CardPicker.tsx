@@ -1,7 +1,6 @@
 import type { CardId } from "../types";
 import { SUITS, RANKS, SUIT_SYMBOLS, cardKey } from "../types";
 import { Card } from "./Card";
-import "./CardPicker.css";
 
 interface CardPickerProps {
   selected: Set<string>;
@@ -10,13 +9,13 @@ interface CardPickerProps {
 
 export function CardPicker({ selected, onToggle }: CardPickerProps) {
   return (
-    <div className="card-picker">
+    <div className="flex flex-col gap-2">
       {SUITS.map((suit) => (
-        <div key={suit} className="card-picker__row">
-          <span className="card-picker__suit-label">
+        <div key={suit} className="flex items-center gap-2">
+          <span className="text-2xl w-8 text-center shrink-0 text-muted-foreground">
             {SUIT_SYMBOLS[suit]}
           </span>
-          <div className="card-picker__cards">
+          <div className="flex gap-1 flex-wrap">
             {RANKS.map((rank) => {
               const card: CardId = { rank, suit };
               return (
