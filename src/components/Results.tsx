@@ -291,7 +291,10 @@ function ComboRow({
                 variant="outline"
                 className="font-mono tabular-nums border-emerald-500/30 text-emerald-400 text-[10px] sm:text-xs"
               >
-                {item.result.mean.toFixed(2)} avg
+                {item.result.mean.toFixed(2)}{" "}
+                <span className="text-muted-foreground">
+                  ±{item.result.standardDeviation.toFixed(1)}
+                </span>
               </Badge>
               <ChevronDown
                 className={cn(

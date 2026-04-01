@@ -13,7 +13,7 @@ export function Card({ card, selected, onClick }: CardProps) {
     <button
       className={cn(
         "relative cursor-pointer select-none p-0 overflow-hidden",
-        "w-[38px] h-[55px] sm:w-[50px] sm:h-[73px]",
+        "w-[42px] h-[61px] sm:w-[50px] sm:h-[73px]",
         "rounded-sm sm:rounded-sm",
         "transition-all duration-200 ease-out",
         "hover:-translate-y-1 hover:shadow-lg",
