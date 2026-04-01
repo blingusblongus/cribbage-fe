@@ -49,6 +49,20 @@ function scoreColor(score: number): string {
   return "text-muted-foreground/60";
 }
 
+function computeMedian(result: HandResult): number {
+  const entries = Object.entries(result.scoringOptions)
+    .map(([score, info]) => ({ score: Number(score), count: info.count }))
+    .sort((a, b) => a.score - b.score);
+  const total = entries.reduce((sum, e) => sum + e.count, 0);
+  const mid = total / 2;
+  let cumulative = 0;
+  for (const e of entries) {
+    cumulative += e.count;
+    if (cumulative >= mid) return e.score;
+  }
+  return entries[entries.length - 1].score;
+}
+
 function getChartData(result: HandResult) {
   const raw = Object.entries(result.scoringOptions)
     .map(([score, info]) => ({ score: Number(score), ...info }));
@@ -102,6 +116,7 @@ function Sparkline({ result }: { result: HandResult }) {
 
 function ScoreDistributionChart({ result }: { result: HandResult }) {
   const data = getChartData(result);
+  const median = computeMedian(result);
 
   return (
     <div className="pt-3 sm:pt-4 border-t border-border">
@@ -159,6 +174,18 @@ function ScoreDistributionChart({ result }: { result: HandResult }) {
               fill: "#34d399",
             }}
           />
+          <ReferenceLine
+            x={median}
+            stroke="#fbbf24"
+            strokeDasharray="2 3"
+            strokeWidth={1.5}
+            label={{
+              value: `med ${median}`,
+              position: "insideBottomLeft",
+              fontSize: 10,
+              fill: "#fbbf24",
+            }}
+          />
           <Area
             type="monotone"
             dataKey="chance"
@@ -177,15 +204,23 @@ function ScoreDistributionChart({ result }: { result: HandResult }) {
 function ScoreBreakdown({ result }: { result: HandResult }) {
   const scores = getChartData(result).sort((a, b) => b.score - a.score);
   const maxChance = Math.max(...scores.map((s) => s.chance));
+  const median = computeMedian(result);
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
           <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 shrink-0" />
           <div className="min-w-0">
             <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Mean</div>
             <div className="text-base sm:text-lg font-bold text-foreground">{result.mean.toFixed(2)}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-300 shrink-0" />
+          <div className="min-w-0">
+            <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">Median</div>
+            <div className="text-base sm:text-lg font-bold text-foreground">{median}</div>
           </div>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
