@@ -74,6 +74,20 @@ export function isRed(suit: Suit): boolean {
   return suit === "h" || suit === "d";
 }
 
+const SVG_SUIT: Record<Suit, string> = {
+  s: "spades", h: "hearts", c: "clubs", d: "diamonds",
+};
+
+const SVG_RANK: Record<Rank, string> = {
+  a: "ace", "2": "2", "3": "3", "4": "4", "5": "5",
+  "6": "6", "7": "7", "8": "8", "9": "9", "10": "10",
+  j: "jack", q: "queen", k: "king",
+};
+
+export function cardSvgPath(card: CardId): string {
+  return `/cards/${SVG_RANK[card.rank]}_of_${SVG_SUIT[card.suit]}.svg`;
+}
+
 export interface ScoringOption {
   count: number;
   chance: number;
