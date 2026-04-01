@@ -112,7 +112,15 @@ function App() {
             {error}
           </div>
         )}
-        {results && <Results data={results} />}
+        <div
+          className={`transition-all duration-500 ease-out ${
+            results
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-4"
+          }`}
+        >
+          {results && <Results data={results} />}
+        </div>
       </div>
     </div>
   );
