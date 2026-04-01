@@ -62,12 +62,22 @@ function getChartData(result: HandResult) {
   return filled;
 }
 
-function barColor(score: number): string {
-  if (score >= 16) return "#fbbf24";
-  if (score >= 12) return "#34d399";
-  if (score >= 8) return "#10b981";
-  if (score >= 4) return "#6b7280";
-  return "#4b5563";
+function scoreColor29(score: number): string {
+  // 0=gray, 8=green, 16=yellow, 20+=red
+  if (score <= 8) {
+    return lerpColor([107, 114, 128], [52, 211, 153], score / 8);
+  } else if (score <= 16) {
+    return lerpColor([52, 211, 153], [251, 191, 36], (score - 8) / 8);
+  } else {
+    return lerpColor([251, 191, 36], [239, 68, 68], Math.min((score - 16) / 4, 1));
+  }
+}
+
+function lerpColor(a: number[], b: number[], t: number): string {
+  const r = Math.round(a[0] + (b[0] - a[0]) * t);
+  const g = Math.round(a[1] + (b[1] - a[1]) * t);
+  const bl = Math.round(a[2] + (b[2] - a[2]) * t);
+  return `rgb(${r},${g},${bl})`;
 }
 
 function Sparkline({ result }: { result: HandResult }) {
@@ -82,7 +92,7 @@ function Sparkline({ result }: { result: HandResult }) {
           className="w-[3px] sm:w-[4px] rounded-t-sm min-h-[1px]"
           style={{
             height: `${(d.chance / maxChance) * 100}%`,
-            backgroundColor: barColor(d.score),
+            backgroundColor: scoreColor29(d.score),
           }}
         />
       ))}
@@ -111,7 +121,7 @@ function ScoreDistributionChart({ result }: { result: HandResult }) {
           />
           <XAxis
             dataKey="score"
-            tick={{ fontSize: 11, fill: "#9ca3af" }}
+            tick={{ fontSize: 11, fill: "#8e8e82" }}
             axisLine={false}
             tickLine={false}
             type="number"
@@ -119,7 +129,7 @@ function ScoreDistributionChart({ result }: { result: HandResult }) {
             ticks={data.map((d) => d.score)}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: "#9ca3af" }}
+            tick={{ fontSize: 10, fill: "#8e8e82" }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v: number) => `${v}%`}
