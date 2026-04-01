@@ -150,7 +150,7 @@ function ComboRow({
                   {item.keep.join(", ")}
                 </strong>
               </span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:inline">
+              <span className="text-[10px] sm:text-xs text-muted-foreground">
                 Discard: {item.discard.join(", ")}
               </span>
               <Badge
