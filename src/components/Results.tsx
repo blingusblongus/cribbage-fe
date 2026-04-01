@@ -22,6 +22,16 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown, TrendingUp, TrendingDown, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ReferenceLine,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 interface ResultsProps {
   data: AnalysisResult[] | HandResult;
@@ -39,15 +49,127 @@ function scoreColor(score: number): string {
   return "text-muted-foreground/60";
 }
 
-function ScoreBreakdown({ result }: { result: HandResult }) {
-  const scores = Object.entries(result.scoringOptions)
-    .map(([score, info]) => ({ score: Number(score), ...info }))
-    .sort((a, b) => b.score - a.score);
+function getChartData(result: HandResult) {
+  const raw = Object.entries(result.scoringOptions)
+    .map(([score, info]) => ({ score: Number(score), ...info }));
+  const min = result.min;
+  const max = result.max;
+  const byScore = new Map(raw.map((d) => [d.score, d]));
+  const filled = [];
+  for (let s = min; s <= max; s++) {
+    filled.push(byScore.get(s) ?? { score: s, chance: 0, count: 0 });
+  }
+  return filled;
+}
 
+function barColor(score: number): string {
+  if (score >= 16) return "#fbbf24";
+  if (score >= 12) return "#34d399";
+  if (score >= 8) return "#10b981";
+  if (score >= 4) return "#6b7280";
+  return "#4b5563";
+}
+
+function Sparkline({ result }: { result: HandResult }) {
+  const data = getChartData(result);
+  const maxChance = Math.max(...data.map((d) => d.chance));
+
+  return (
+    <div className="flex items-end gap-px h-[18px] sm:h-[22px]" title={`Mean: ${result.mean.toFixed(2)}`}>
+      {data.map((d) => (
+        <div
+          key={d.score}
+          className="w-[3px] sm:w-[4px] rounded-t-sm min-h-[1px]"
+          style={{
+            height: `${(d.chance / maxChance) * 100}%`,
+            backgroundColor: barColor(d.score),
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ScoreDistributionChart({ result }: { result: HandResult }) {
+  const data = getChartData(result);
+
+  return (
+    <div className="pt-3 sm:pt-4 border-t border-border">
+      <ResponsiveContainer width="100%" height={180}>
+        <AreaChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -20 }}>
+          <defs>
+            <linearGradient id="chanceGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#34d399" stopOpacity={0.3} />
+              <stop offset="100%" stopColor="#34d399" stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid
+            horizontal={true}
+            vertical={false}
+            stroke="hsl(var(--border))"
+            strokeOpacity={0.5}
+          />
+          <XAxis
+            dataKey="score"
+            tick={{ fontSize: 11, fill: "#9ca3af" }}
+            axisLine={false}
+            tickLine={false}
+            type="number"
+            domain={[result.min, result.max]}
+            ticks={data.map((d) => d.score)}
+          />
+          <YAxis
+            tick={{ fontSize: 10, fill: "#9ca3af" }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(v: number) => `${v}%`}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: 8,
+              fontSize: 12,
+            }}
+            labelStyle={{ color: "hsl(var(--foreground))" }}
+            itemStyle={{ color: "hsl(var(--muted-foreground))" }}
+            formatter={(value) => [`${Number(value).toFixed(1)}%`, "Chance"]}
+            labelFormatter={(label) => `Score: ${label}`}
+            cursor={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}
+          />
+          <ReferenceLine
+            x={result.mean}
+            stroke="#34d399"
+            strokeDasharray="4 4"
+            strokeWidth={1.5}
+            label={{
+              value: `avg ${result.mean.toFixed(1)}`,
+              position: "top",
+              fontSize: 10,
+              fill: "#34d399",
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey="chance"
+            stroke="#34d399"
+            strokeWidth={2}
+            fill="url(#chanceGradient)"
+            dot={{ r: 3, fill: "#34d399", strokeWidth: 0 }}
+            activeDot={{ r: 5, fill: "#34d399", stroke: "#fff", strokeWidth: 2 }}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function ScoreBreakdown({ result }: { result: HandResult }) {
+  const scores = getChartData(result).sort((a, b) => b.score - a.score);
   const maxChance = Math.max(...scores.map((s) => s.chance));
 
   return (
-    <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-border">
+    <div className="space-y-3 sm:space-y-4">
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="flex items-center gap-1.5 sm:gap-2 bg-muted/50 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
           <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 shrink-0" />
@@ -71,6 +193,7 @@ function ScoreBreakdown({ result }: { result: HandResult }) {
           </div>
         </div>
       </div>
+      <ScoreDistributionChart result={result} />
       <Table>
         <TableHeader>
           <TableRow className="border-border">
@@ -153,6 +276,7 @@ function ComboRow({
               <span className="text-[10px] sm:text-xs text-muted-foreground">
                 Discard: {item.discard.join(", ")}
               </span>
+              <Sparkline result={item.result} />
               <Badge
                 variant="outline"
                 className="font-mono tabular-nums border-emerald-500/30 text-emerald-400 text-[10px] sm:text-xs"
